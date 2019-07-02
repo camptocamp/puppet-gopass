@@ -22,7 +22,12 @@ Puppet::Functions.create_function(:gopass) do
 
     if lines.length > 1
       body = lines[1..-1].join("\n")
-      data = YAML.safe_load(body)
+      begin
+        data = YAML.safe_load(body)
+      rescue => e
+        Puppet.warning("gopass(): #{e}")
+        # leave data to nil
+      end
     end
 
     {
