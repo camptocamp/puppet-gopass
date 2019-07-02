@@ -16,17 +16,13 @@ Puppet::Functions.create_function(:gopass) do
     return nil unless keys.include? key
 
     lines = Puppet::Util::Execution.execute("gopass '#{key}'").split("\n")
-    return nil if lines.length == 0
+    return nil if lines.empty?
 
     password = lines[0]
 
     if lines.length > 1
       body = lines[1..-1].join("\n")
-      begin
-          data = YAML.load(body)
-      rescue
-          # leave data to nil
-      end
+      data = YAML.safe_load(body)
     end
 
     {
